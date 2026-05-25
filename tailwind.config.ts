@@ -1,0 +1,130 @@
+import type { Config } from "tailwindcss"
+
+const config = {
+  darkMode: ["class"],
+  content: [
+    './pages/**/*.{ts,tsx}',
+    './components/**/*.{ts,tsx}',
+    './app/**/*.{ts,tsx}',
+    './src/**/*.{ts,tsx}',
+	],
+  prefix: "",
+  theme: {
+    container: {
+      center: true,
+      padding: "2rem",
+      screens: {
+        "2xl": "1400px",
+      },
+    },
+    extend: {
+      colors: {
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        foreground: "hsl(var(--foreground))",
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
+        },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
+        "secondary": "#31638a",
+        "surface-bright": "#fff8ef",
+        "tertiary-container": "#fad3fd",
+        "on-surface-variant": "#655f4c",
+        "tertiary-fixed": "#fad3fd",
+        "on-primary": "#e3fff7",
+        "surface-container-highest": "#ece2ca",
+        "on-surface": "#373222",
+        "inverse-surface": "#110e06",
+        "background": "#fff8ef",
+        "on-secondary": "#f6f9ff",
+        "surface-container-high": "#f1e7d2",
+        "surface-container-low": "#fbf3e1",
+        "outline": "#827a66",
+        "primary-fixed-dim": "#7fe0cd",
+        "primary-fixed": "#8deedb",
+        "on-primary-container": "#00594d",
+        "surface-variant": "#ece2ca",
+        "secondary-dim": "#22577e",
+        "secondary-container": "#cde5ff",
+        "on-secondary-fixed-variant": "#2c5f87",
+        "on-secondary-container": "#20567c",
+        "secondary-fixed-dim": "#b1d9ff",
+        "on-error": "#fff7f6",
+        "primary-dim": "#005e52",
+        "on-tertiary-fixed": "#4f3455",
+        "inverse-on-surface": "#a29c8f",
+        "on-tertiary": "#fff7fb",
+        "error-dim": "#70030f",
+        "tertiary": "#735578",
+        "tertiary-dim": "#66496b",
+        "on-primary-fixed-variant": "#006457",
+        "surface-container": "#f6edda",
+        "surface-container-lowest": "#ffffff",
+        "inverse-primary": "#9bfde9",
+        "primary": "#006b5e",
+        "surface": "#fff8ef",
+        "surface-dim": "#e4d9bf",
+        "error": "#ac3434",
+        "tertiary-fixed-dim": "#ebc5ef",
+        "on-primary-fixed": "#00443b",
+        "error-container": "#f56965",
+        "on-tertiary-container": "#634668",
+        "on-secondary-fixed": "#004369",
+        "secondary-fixed": "#cde5ff",
+        "surface-tint": "#006b5e",
+        "on-error-container": "#65000b",
+        "primary-container": "#8deedb",
+        "on-tertiary-fixed-variant": "#6d4f72",
+        "on-background": "#373222",
+        "outline-variant": "#bab19b"
+      },
+      borderRadius: {
+        "DEFAULT": "1rem",
+        "lg": "2rem",
+        "xl": "3rem",
+        "full": "9999px",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
+      },
+      fontFamily: {
+        "headline": ["Plus Jakarta Sans"],
+        "body": ["Be Vietnam Pro"],
+        "label": ["Be Vietnam Pro"]
+      },
+      keyframes: {
+        "accordion-down": {
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
+        },
+        "accordion-up": {
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
+        },
+      },
+      animation: {
+        "accordion-down": "accordion-down 0.2s ease-out",
+        "accordion-up": "accordion-up 0.2s ease-out",
+      },
+    },
+  },
+  plugins: [require("tailwindcss-animate")],
+} satisfies Config
+
+export default config

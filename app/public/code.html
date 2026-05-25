@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Career Guidance application - Login</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary": "#31638a",
+                        "surface-bright": "#fff8ef",
+                        "tertiary-container": "#fad3fd",
+                        "on-surface-variant": "#655f4c",
+                        "tertiary-fixed": "#fad3fd",
+                        "on-primary": "#e3fff7",
+                        "surface-container-highest": "#ece2ca",
+                        "on-surface": "#373222",
+                        "inverse-surface": "#110e06",
+                        "background": "#fff8ef",
+                        "on-secondary": "#f6f9ff",
+                        "surface-container-high": "#f1e7d2",
+                        "surface-container-low": "#fbf3e1",
+                        "outline": "#827a66",
+                        "primary-fixed-dim": "#7fe0cd",
+                        "primary-fixed": "#8deedb",
+                        "on-primary-container": "#00594d",
+                        "surface-variant": "#ece2ca",
+                        "secondary-dim": "#22577e",
+                        "secondary-container": "#cde5ff",
+                        "on-secondary-fixed-variant": "#2c5f87",
+                        "on-secondary-container": "#20567c",
+                        "secondary-fixed-dim": "#b1d9ff",
+                        "on-error": "#fff7f6",
+                        "primary-dim": "#005e52",
+                        "on-tertiary-fixed": "#4f3455",
+                        "inverse-on-surface": "#a29c8f",
+                        "on-tertiary": "#fff7fb",
+                        "error-dim": "#70030f",
+                        "tertiary": "#735578",
+                        "tertiary-dim": "#66496b",
+                        "on-primary-fixed-variant": "#006457",
+                        "surface-container": "#f6edda",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-primary": "#9bfde9",
+                        "primary": "#006b5e",
+                        "surface": "#fff8ef",
+                        "surface-dim": "#e4d9bf",
+                        "error": "#ac3434",
+                        "tertiary-fixed-dim": "#ebc5ef",
+                        "on-primary-fixed": "#00443b",
+                        "error-container": "#f56965",
+                        "on-tertiary-container": "#634668",
+                        "on-secondary-fixed": "#004369",
+                        "secondary-fixed": "#cde5ff",
+                        "surface-tint": "#006b5e",
+                        "on-error-container": "#65000b",
+                        "primary-container": "#8deedb",
+                        "on-tertiary-fixed-variant": "#6d4f72",
+                        "on-background": "#373222",
+                        "outline-variant": "#bab19b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Be Vietnam Pro"],
+                        "label": ["Be Vietnam Pro"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Be Vietnam Pro', sans-serif; }
+        h1, h2, h3 { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .organic-shape {
+            border-radius: 60% 40% 70% 30% / 40% 50% 60% 40%;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface overflow-hidden">
+<main class="min-h-screen flex flex-col md:flex-row">
+<!-- Left Section: Hero -->
+<section class="hidden md:flex md:w-3/5 lg:w-2/3 bg-surface-container-low relative items-center justify-center p-12 overflow-hidden">
+<!-- Decorative Organic Shapes -->
+<div class="absolute top-[-10%] left-[-5%] w-[400px] h-[400px] bg-primary-container/20 organic-shape blur-3xl"></div>
+<div class="absolute bottom-[-10%] right-[5%] w-[350px] h-[350px] bg-secondary-container/30 organic-shape blur-3xl"></div>
+<div class="z-10 text-center space-y-12 max-w-2xl">
+<div class="flex items-center justify-center gap-3 mb-8">
+<div class="w-12 h-12 bg-primary rounded-xl flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined text-3xl" data-icon="school">school</span>
+</div>
+<span class="text-2xl font-extrabold tracking-tight text-on-surface font-headline">Career Guidance application</span>
+</div>
+<div class="relative">
+<!-- Hero Image / Illustration -->
+<div class="w-full aspect-[4/3] rounded-xl overflow-hidden shadow-2xl bg-white/40 backdrop-blur-sm p-4">
+<img alt="Professional growth illustration" class="w-full h-full object-cover rounded-lg" data-alt="A cute, friendly 3D character sitting on a stack of giant colorful books holding a laptop, surrounded by soft pastel floating career icons like a lightbulb and a graduation cap, soft studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB35hbgu6HipWV-pYMm3EqU856vkjI1tSJvjjetGHrVy0eD4-is6yFuGXRQea8AW5ncV0mQO_4rYoz6D2t8kNFSamxIUmzBTFnrUlQfoYmgodjIbhDP7FWgm6G3FTyCmLSqSQSO_zcYfw_MFJkape7EFRCjiLtWYQ2f9_qo1b6r0IshtsikCfsYe3twQBKygRBetftqPYj-AKQoVTYbV5JZNhmPO6fZI0_nQj02RtPXdLwGFuciLPHBtfFUticiIpEdORdC4LAqfsoY"/>
+</div>
+<!-- Growth Pod Signature Component -->
+<div class="absolute -bottom-8 -left-8 bg-tertiary-container p-6 rounded-xl shadow-xl max-w-[200px] rotate-[-2deg]">
+<div class="flex items-center gap-3 mb-2">
+<span class="material-symbols-outlined text-on-tertiary-container" data-icon="trending_up">trending_up</span>
+<span class="font-bold text-on-tertiary-container">Growth Track</span>
+</div>
+<div class="h-2 w-full bg-on-tertiary-container/10 rounded-full overflow-hidden">
+<div class="h-full bg-on-tertiary-container w-2/3 rounded-full"></div>
+</div>
+<p class="text-xs mt-2 text-on-tertiary-container/80">Your journey is 65% complete</p>
+</div>
+</div>
+<div class="space-y-4 pt-12">
+<h1 class="text-5xl font-extrabold text-on-surface leading-[1.1] tracking-tight">
+                        Navigate your <span class="text-primary italic">future</span> with confidence.
+                    </h1>
+<p class="text-lg text-on-surface-variant font-medium">
+                        Personalized pathways, expert mentorship, and tools designed for your professional sanctuary.
+                    </p>
+</div>
+</div>
+</section>
+<!-- Right Section: Login Card -->
+<section class="flex-1 flex flex-col items-center justify-center p-8 relative">
+<!-- Mobile Brand Logo -->
+<div class="md:hidden flex items-center gap-2 mb-12">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="school">school</span>
+<span class="text-xl font-extrabold text-on-surface font-headline">The Sanctuary</span>
+</div>
+<div class="w-full max-w-md">
+<div class="bg-surface-container-lowest rounded-xl p-10 md:p-12 shadow-[0_40px_40px_-15px_rgba(55,50,34,0.06)] border border-outline-variant/15">
+<div class="text-center mb-10">
+<h2 class="text-3xl font-bold text-on-surface mb-3 tracking-tight">Welcome Back</h2>
+<p class="text-on-surface-variant leading-relaxed">Continue your professional journey or explore new horizons.</p>
+</div>
+<div class="space-y-6">
+<!-- Sign in with Google Button -->
+<button class="w-full group relative flex items-center justify-center gap-3 px-6 py-4 bg-surface-container-highest text-on-surface font-semibold rounded-full transition-all duration-200 hover:bg-surface-container-high active:scale-95">
+<svg class="w-5 h-5" viewbox="0 0 24 24">
+<path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
+<path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
+<path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"></path>
+<path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path>
+</svg>
+                            Sign in using your Google account
+                        </button>
+<div class="relative flex py-4 items-center">
+<div class="flex-grow border-t border-outline-variant/30"></div>
+<span class="flex-shrink mx-4 text-sm text-outline font-medium">or use email</span>
+<div class="flex-grow border-t border-outline-variant/30"></div>
+</div>
+<div class="space-y-4">
+<input class="w-full px-6 py-4 bg-surface-container-highest border-none rounded-lg text-on-surface placeholder:text-on-surface-variant/50 focus:ring-2 focus:ring-primary/40 transition-all outline-none" placeholder="Email address" type="email"/>
+<input class="w-full px-6 py-4 bg-surface-container-highest border-none rounded-lg text-on-surface placeholder:text-on-surface-variant/50 focus:ring-2 focus:ring-primary/40 transition-all outline-none" placeholder="Password" type="password"/>
+</div>
+<button class="w-full py-4 bg-primary text-white rounded-full font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all duration-200">
+                            Continue to Career Sanctuary
+                        </button>
+</div>
+<p class="text-center mt-8 text-sm text-on-surface-variant">
+                        Don't have an account? <a class="text-primary font-bold hover:underline" href="#">Start your free trial</a>
+</p>
+</div>
+</div>
+<!-- Footer Links -->
+<footer class="absolute bottom-8 w-full px-8">
+<div class="flex flex-wrap justify-center gap-x-8 gap-y-2 text-sm text-on-surface-variant font-medium">
+<a class="hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="hover:text-primary transition-colors" href="#">Support</a>
+</div>
+<div class="mt-4 text-center text-xs text-on-surface-variant/50">
+                    © 2024 Career Guidance application. All rights reserved.
+                </div>
+</footer>
+</section>
+</main>
+</body></html>

@@ -1,0 +1,42 @@
+const fs = require('fs');
+const env = fs.readFileSync('d:\\project-1\\.env', 'utf-8');
+const match = env.match(/HUGGING_FACE_API_TOKEN="?([^"\n]+)"?/);
+const apiKey = match ? match[1].trim() : '';
+
+async function test() {
+  const prompt = `Generate 2 unique multiple-choice questions based on this transcript text.
+Output ONLY valid JSON matching this exact structure:
+{"questions":[{"question":"...","options":["A: ...","B: ...","C: ...","D: ..."],"correctAnswer":"A"}]}
+
+Text:
+Hello world. This is a text about the history of computers.`;
+
+  try {
+    const res = await fetch('https://router.huggingface.co/hf-inference/v1/chat/completions', {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model: "meta-llama/Llama-3.2-3B-Instruct",
+        messages: [{ role: "user", content: prompt }],
+        max_tokens: 500
+      })
+    });
+
+    if (!res.ok) {
+      const errText = await res.text();
+      fs.writeFileSync('d:\\project-1\\hf-error.txt', errText);
+      console.error('API Error saved');
+    } else {
+      const data = await res.json();
+      fs.writeFileSync('d:\\project-1\\hf-success.txt', JSON.stringify(data, null, 2));
+      console.log('Success saved', data.choices[0].message.content);
+    }
+  } catch (err) {
+    console.error('Fetch Error:', err);
+  }
+}
+
+test();
