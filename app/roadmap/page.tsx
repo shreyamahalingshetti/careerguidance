@@ -345,66 +345,107 @@ function RoadmapContent() {
       </div>
 
       {activeTab === 'interactive' ? (
-        <div className="flex gap-14 max-w-7xl mx-auto">
-        {/* LEFT – JOURNEY */}
-        <div className="relative w-1/4">          {roadmapData.map((node, index) => {
-            const isActive = selectedNode?.id === node.id;
-            const nodeProg = progressList.find(p => p.nodeId === node.id);
-            const isCompleted = !!nodeProg; // Any attempt turns it blue
-            const scoreDisplay = nodeProg ? `${nodeProg.score}/${nodeProg.total}` : '';
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-14 max-w-7xl mx-auto">
+          {/* MOBILE – HORIZONTAL JOURNEY (lg:hidden) */}
+          <div className="lg:hidden flex flex-row overflow-x-auto gap-3 pb-4 mb-6 border-b border-gray-200 scrollbar-thin">
+            {roadmapData.map((node, index) => {
+              const isActive = selectedNode?.id === node.id;
+              const nodeProg = progressList.find(p => p.nodeId === node.id);
+              const isCompleted = !!nodeProg;
+              const scoreDisplay = nodeProg ? `${nodeProg.score}/${nodeProg.total}` : '';
 
-            return (
-              <div key={node.id} className="relative flex items-start mb-14">
-                {/* DYNAMIC LINE SEGMENT TO NEXT NODE */}
-                {index < roadmapData.length - 1 && (
-                  <div
-                    className={`absolute left-6 top-12 w-[2px] h-[3.5rem] -ml-[1px] transition-colors duration-500 z-0 ${
-                      isCompleted ? "bg-blue-500" : "bg-gray-300"
-                    }`}
-                  />
-                )}
-
-                {/* DOT */}
-                <div
+              return (
+                <button
+                  key={node.id}
                   onClick={() => handleSelectNode(node)}
-                  className={`w-12 h-12 rounded-full flex items-center justify-center cursor-pointer font-bold z-10 transition
-                    ${
-                      isActive
-                        ? "bg-blue-600 text-white shadow-lg scale-105"
-                        : isCompleted
-                        ? "bg-blue-500 text-white shadow border-2 border-blue-500"
-                        : "bg-white border-2 border-gray-300 text-gray-600 hover:border-blue-400"
-                    }
-                  `}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-full border transition-all flex-shrink-0 text-sm font-semibold ${
+                    isActive
+                      ? "bg-blue-600 text-white border-blue-600 shadow-md"
+                      : isCompleted
+                      ? "bg-blue-55 text-blue-600 border-blue-300"
+                      : "bg-white text-gray-600 border-gray-200 hover:border-blue-400"
+                  }`}
                 >
-                  {isCompleted && !isActive ? "✓" : index + 1}
-                </div>
+                  <span className={`w-5 h-5 rounded-full text-[10px] flex items-center justify-center font-bold ${
+                    isActive
+                      ? "bg-white text-blue-600"
+                      : isCompleted
+                      ? "bg-blue-500 text-white"
+                      : "bg-gray-100 text-gray-600"
+                  }`}>
+                    {isCompleted ? "✓" : index + 1}
+                  </span>
+                  <span className="truncate max-w-[120px]">{node.title}</span>
+                  {nodeProg && (
+                    <span className="text-[10px] bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 px-1.5 py-0.5 rounded font-bold">
+                      {scoreDisplay}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
 
-                {/* LABEL */}
-                <div className="ml-5">
-                  <p
-                    className={`text-lg font-semibold ${
-                      isActive ? "text-blue-600" : isCompleted ? "text-blue-600" : "text-gray-700"
-                    }`}
+          {/* DESKTOP – JOURNEY (hidden lg:block) */}
+          <div className="hidden lg:block relative w-1/4">
+            {roadmapData.map((node, index) => {
+              const isActive = selectedNode?.id === node.id;
+              const nodeProg = progressList.find(p => p.nodeId === node.id);
+              const isCompleted = !!nodeProg; // Any attempt turns it blue
+              const scoreDisplay = nodeProg ? `${nodeProg.score}/${nodeProg.total}` : '';
+
+              return (
+                <div key={node.id} className="relative flex items-start mb-14">
+                  {/* DYNAMIC LINE SEGMENT TO NEXT NODE */}
+                  {index < roadmapData.length - 1 && (
+                    <div
+                      className={`absolute left-6 top-12 w-[2px] h-[3.5rem] -ml-[1px] transition-colors duration-500 z-0 ${
+                        isCompleted ? "bg-blue-500" : "bg-gray-300"
+                      }`}
+                    />
+                  )}
+
+                  {/* DOT */}
+                  <div
+                    onClick={() => handleSelectNode(node)}
+                    className={`w-12 h-12 rounded-full flex items-center justify-center cursor-pointer font-bold z-10 transition
+                      ${
+                        isActive
+                          ? "bg-blue-600 text-white shadow-lg scale-105"
+                          : isCompleted
+                          ? "bg-blue-500 text-white shadow border-2 border-blue-500"
+                          : "bg-white border-2 border-gray-300 text-gray-600 hover:border-blue-400"
+                      }
+                    `}
                   >
-                    {node.title}
-                  </p>
-                  <p className="text-sm text-gray-500 flex items-center gap-2 mt-1">
-                    Step {index + 1}
-                    {nodeProg && (
-                      <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${nodeProg.passed ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
-                        Best: {scoreDisplay}
-                      </span>
-                    )}
-                  </p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+                    {isCompleted && !isActive ? "✓" : index + 1}
+                  </div>
 
-        {/* RIGHT – CONTENT */}
-        <div className="flex-1 bg-white rounded-2xl shadow-xl p-8 max-h-[85vh] overflow-y-auto">
+                  {/* LABEL */}
+                  <div className="ml-5">
+                    <p
+                      className={`text-lg font-semibold ${
+                        isActive ? "text-blue-600" : isCompleted ? "text-blue-600" : "text-gray-700"
+                      }`}
+                    >
+                      {node.title}
+                    </p>
+                    <p className="text-sm text-gray-500 flex items-center gap-2 mt-1">
+                      Step {index + 1}
+                      {nodeProg && (
+                        <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${nodeProg.passed ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
+                          Best: {scoreDisplay}
+                        </span>
+                      )}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* RIGHT – CONTENT */}
+          <div className="w-full lg:flex-1 bg-white rounded-2xl shadow-xl p-4 sm:p-8 max-h-[85vh] overflow-y-auto">
           {!selectedNode ? (
             <p className="text-gray-600 text-center mt-20">
               Select a topic from the left to get started 👈

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { Minus, Square } from "lucide-react";
+import { Minus, Square, MessageCircle } from "lucide-react";
 
 type Message = {
   id: string;
@@ -63,24 +63,36 @@ export default function Chat() {
 
   if (isMinimized) {
     return (
-      <Card className="fixed right-4 bottom-4 z-[100] w-[320px] max-w-[calc(100vw-2rem)] rounded-[2rem] overflow-hidden border border-outline-variant/30 shadow-2xl bg-surface-container-lowest">
-        <CardHeader className="px-6 py-4 flex flex-row items-center justify-between space-y-0 bg-gradient-to-r from-primary/10 to-transparent">
-          <div>
-             <div className="text-lg font-bold text-on-surface font-headline">AI Career Chat</div>
-             <div className="text-xs text-on-surface-variant font-medium">Minimized</div>
-          </div>
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            aria-label="Maximize chat"
-            onClick={() => setIsMinimized(false)}
-            className="hover:bg-primary/20 text-primary rounded-full"
-          >
-            <Square className="h-4 w-4" />
-          </Button>
-        </CardHeader>
-      </Card>
+      <>
+        {/* DESKTOP MINIMIZED VIEW */}
+        <Card className="hidden sm:block fixed right-4 bottom-4 z-[100] w-[320px] rounded-[2rem] overflow-hidden border border-outline-variant/30 shadow-2xl bg-surface-container-lowest">
+          <CardHeader className="px-6 py-4 flex flex-row items-center justify-between space-y-0 bg-gradient-to-r from-primary/10 to-transparent">
+            <div>
+               <div className="text-lg font-bold text-on-surface font-headline">AI Career Chat</div>
+               <div className="text-xs text-on-surface-variant font-medium">Minimized</div>
+            </div>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              aria-label="Maximize chat"
+              onClick={() => setIsMinimized(false)}
+              className="hover:bg-primary/20 text-primary rounded-full"
+            >
+              <Square className="h-4 w-4" />
+            </Button>
+          </CardHeader>
+        </Card>
+
+        {/* MOBILE MINIMIZED VIEW (Floating Circle FAB) */}
+        <button
+          onClick={() => setIsMinimized(false)}
+          className="sm:hidden fixed right-4 bottom-4 z-[100] w-14 h-14 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-600 text-white shadow-2xl flex items-center justify-center cursor-pointer hover:scale-105 active:scale-95 transition-all border-2 border-white/20"
+          aria-label="Maximize chat"
+        >
+          <MessageCircle className="h-6 w-6" />
+        </button>
+      </>
     );
   }
 

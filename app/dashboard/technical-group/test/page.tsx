@@ -539,12 +539,12 @@ export default function TechnicalGroupTestPage() {
             </p>
 
             {/* 5-Point Likert Scale with Circles */}
-            <div className="flex justify-between items-start mb-8">
+            <div className="flex justify-between items-start gap-1 sm:gap-3 mb-8">
               {[0, 1, 2, 3, 4].map((idx) => (
-                <div key={idx} className="flex flex-col items-center">
+                <div key={idx} className="flex flex-col items-center flex-1">
                   <button
                     onClick={() => handleAnswer(question.id, idx)}
-                    className={`w-16 h-16 rounded-full flex items-center justify-center text-xl font-bold transition-all duration-200 mb-3 ${
+                    className={`w-10 h-10 sm:w-16 sm:h-16 rounded-full flex items-center justify-center text-sm sm:text-xl font-bold transition-all duration-200 mb-3 ${
                       selectedAnswer === idx
                         ? 'bg-purple-600 text-white border-2 border-purple-700 scale-110'
                         : 'border-2 border-gray-300 text-gray-600 hover:border-purple-400 dark:border-gray-600'
@@ -552,7 +552,7 @@ export default function TechnicalGroupTestPage() {
                   >
                     {idx + 1}
                   </button>
-                  <span className={`text-xs text-center font-medium whitespace-nowrap ${selectedAnswer === idx ? 'text-purple-600 dark:text-purple-400' : 'text-gray-600 dark:text-gray-400'}`}>
+                  <span className={`text-[9px] sm:text-xs text-center font-semibold leading-tight max-w-[65px] sm:max-w-[90px] block ${selectedAnswer === idx ? 'text-purple-600 dark:text-purple-400' : 'text-gray-600 dark:text-gray-400'}`}>
                     {['Strongly Disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly Agree'][idx]}
                   </span>
                 </div>

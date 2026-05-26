@@ -413,9 +413,26 @@ export default function TechnicalGroupResultClient() {
           )
         })()}
 
-        <div className="mt-6 flex justify-center">
+        <div className="mt-6 flex justify-center gap-4 flex-wrap">
           <Button onClick={() => router.push('/my-dashboard')} size="lg" className="bg-purple-600 hover:bg-purple-700">
             Back to Dashboard
+          </Button>
+          <Button 
+            onClick={() => {
+              const url = derivedSpecKey === 'software' 
+                ? '/dashboard/technical-group/software-pathways'
+                : derivedSpecKey === 'datascience' 
+                ? '/dashboard/technical-group/data-pathways'
+                : derivedSpecKey === 'cybersecurity'
+                ? '/roadmap?pathway=cybersecurity'
+                : '/dashboard/technical-group';
+              router.push(url);
+            }} 
+            size="lg" 
+            variant="outline" 
+            className="border-purple-600 text-purple-600 hover:bg-purple-50 rounded-full font-bold shadow-sm"
+          >
+            View Pathways
           </Button>
         </div>
       </div>
