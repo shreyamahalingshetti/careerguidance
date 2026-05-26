@@ -12,7 +12,9 @@
     "db:studio": "prisma studio",
     "db:migrate": "prisma migrate dev",
     "db:seed": "tsx prisma/seed.ts",
-    "clean-asynckit": "node scripts/clean-asynckit.js"
+    "clean-asynckit": "node scripts/clean-asynckit.js",
+    "clean-floating-ui": "node scripts/clean-floating-ui.js",
+    "clean-all": "node scripts/clean-all.js"
   },
   "dependencies": {
     "@google/genai": "^1.30.0",
