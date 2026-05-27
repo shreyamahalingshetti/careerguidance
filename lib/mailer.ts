@@ -1,39 +1,33 @@
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 
-// Gmail SMTP via App Password (spaces must be removed from the 16-char app password)
-export const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    get user() {
-      return process.env.GMAIL_USER;
-    },
-    get pass() {
-      return (process.env.GMAIL_APP_PASSWORD || '').replace(/\s+/g, '');
-    }
-  } as any,
-});
-
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function sendEmail({ to, subject, html }: { to: string; subject: string; html: string }) {
-  const user = process.env.GMAIL_USER;
-  const pass = process.env.GMAIL_APP_PASSWORD;
+  const apiKey = process.env.RESEND_API_KEY;
 
-  if (!user || !pass) {
-    console.error('Mailer Error: GMAIL_USER or GMAIL_APP_PASSWORD is not set in .env');
-    return { success: false, error: 'Missing email credentials' };
+  if (!apiKey) {
+    console.error('Mailer Error: RESEND_API_KEY is not set in environment variables');
+    return { success: false, error: 'Missing Resend API key' };
   }
 
   try {
-    const info = await transporter.sendMail({
-      from: `"Career Guidance App" <${user}>`,
+    const { data, error } = await resend.emails.send({
+      from: 'Career Guidance App <onboarding@resend.dev>',
       to,
       subject,
       html,
     });
-    console.log('Email sent successfully:', info.messageId, '→', to);
-    return { success: true, messageId: info.messageId };
+
+    if (error) {
+      console.error('Resend email error:', error);
+      return { success: false, error: error.message };
+    }
+
+    console.log('Email sent successfully via Resend:', data?.id, '→', to);
+    return { success: true, messageId: data?.id };
   } catch (error: any) {
-    console.error('Error sending email via Nodemailer:', error?.message || error);
+    console.error('Error sending email via Resend:', error?.message || error);
     return { success: false, error: error?.message || error };
   }
 }
+
