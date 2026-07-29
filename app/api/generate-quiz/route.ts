@@ -92,22 +92,23 @@ export async function POST(request: NextRequest) {
       console.log(`[quiz] Transcript fetched successfully: ${transcript.length} chars`);
     }
 
-    // 2. Setup Hugging Face API
-    let apiKey = process.env.HUGGING_FACE_API_TOKEN || '';
+    // 2. Setup Gemini API
+    let apiKey = process.env.GEMINI_API_KEY || '';
     
     // Normalize API Key: check for literal quotes or whitespace
     apiKey = apiKey.trim().replace(/^['"]|['"]$/g, '');
+    if (apiKey.includes(' ')) apiKey = apiKey.split(' ')[0];
     
     if (!apiKey) {
-      console.error('[quiz] Hugging Face API Key MISSING');
-      return NextResponse.json({ error: 'Hugging Face API Key not configured in server environment' }, { status: 500 });
+      console.error('[quiz] Gemini API Key MISSING');
+      return NextResponse.json({ error: 'Gemini API Key not configured in server environment' }, { status: 500 });
     }
 
     // 3. Generate Quiz
     const randomSeed = Math.random().toString(36).substring(7);
     const requestedCount = 65; // Request more to ensure we get at least 50 even if it cuts off
 
- const prompt = `
+    const prompt = `
 You are an expert exam paper setter.
 
 The main topic of this test is: ${topic}.
@@ -133,7 +134,7 @@ Examples of subtopics:
 Each question must:
 - Be clear and complete
 - Have 4 options (A, B, C, D)
-- Only ONE correct answer
+- Only ONE correct answer (must be EXACTLY 'A', 'B', 'C', or 'D')
 - Include realistic distractors
 - Include a "topic" field representing the subtopic
 
@@ -142,63 +143,83 @@ IMPORTANT:
 - Ensure variety
 - The "topic" field must be specific (NOT just "${topic}", but subtopics)
 
-OUTPUT STRICTLY JSON:
-{
-  "questions": [
-    {
-      "question": "...",
-      "options": [
-        "A: ...",
-        "B: ...",
-        "C: ...",
-        "D: ..."
-      ],
-      "correctAnswer": "A",
-      "topic": "Forms"
-    }
-  ]
-}
+OUTPUT STRICTLY JSON matching the response schema.
 
 ${transcript ? `Transcript:\n${transcript.slice(0, 3000)}` : `[Important Note: No video transcript is available. Please generate foundational and standard questions broadly covering ${topic} suitable for the video's context.]`}
 `;
 
-    console.log('[quiz] Requesting Hugging Face output via Router API (meta-llama/Meta-Llama-3-8B-Instruct)...');
+    console.log('[quiz] Requesting Gemini output via REST API (gemini-2.5-flash)...');
     
-    const apiUrl = `https://router.huggingface.co/v1/chat/completions`;
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(apiKey)}`;
     
-    const hfRes = await fetch(apiUrl, {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`
+    const QUIZ_SCHEMA = {
+      type: 'object',
+      properties: {
+        questions: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              question: { type: 'string' },
+              options: {
+                type: 'array',
+                items: { type: 'string' }
+              },
+              correctAnswer: { type: 'string', enum: ['A', 'B', 'C', 'D'] },
+              topic: { type: 'string' }
+            },
+            required: ['question', 'options', 'correctAnswer', 'topic']
+          }
+        }
       },
-      body: JSON.stringify({
-        model: "meta-llama/Meta-Llama-3-8B-Instruct",
-        messages: [{ role: 'user', content: prompt }],
-        max_tokens: 4000,
-        temperature: 0.7,
-        response_format: { type: "json_object" }
-      }),
-      cache: 'no-store'
-    });
+      required: ['questions']
+    };
 
-    if (!hfRes.ok) {
-      const errText = await hfRes.text();
-      console.error('[quiz] Hugging Face API error:', errText);
-      try {
-        const errJson = JSON.parse(errText);
-        return NextResponse.json({ error: errJson?.error?.message || errJson?.error || `HF API returned ${hfRes.status}` }, { status: hfRes.status });
-      } catch (e) {
-        return NextResponse.json({ error: `Hugging Face API returned ${hfRes.status}` }, { status: hfRes.status });
+    let geminiRes;
+    let attempts = 0;
+    const maxAttempts = 3;
+    while (attempts < maxAttempts) {
+      attempts++;
+      console.log(`[quiz] Requesting Gemini output (Attempt ${attempts} of ${maxAttempts})...`);
+      geminiRes = await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ role: 'user', parts: [{ text: prompt }] }],
+          generationConfig: {
+            temperature: 0.7,
+            maxOutputTokens: 8192,
+            responseMimeType: "application/json",
+            responseSchema: QUIZ_SCHEMA
+          }
+        }),
+        cache: 'no-store'
+      });
+
+      if (geminiRes.ok) {
+        break;
+      }
+      
+      const errText = await geminiRes.text();
+      console.warn(`[quiz] Attempt ${attempts} failed:`, errText);
+      if (attempts < maxAttempts) {
+        await new Promise(resolve => setTimeout(resolve, 1500));
+      } else {
+        try {
+          const errJson = JSON.parse(errText);
+          return NextResponse.json({ error: errJson?.error?.message || errJson?.error || `Gemini API returned ${geminiRes.status}` }, { status: geminiRes.status });
+        } catch (e) {
+          return NextResponse.json({ error: `Gemini API returned ${geminiRes.status}` }, { status: geminiRes.status });
+        }
       }
     }
 
-    const result = await hfRes.json();
-    const text = result?.choices?.[0]?.message?.content;
+    const result = await geminiRes.json();
+    const text = result?.candidates?.[0]?.content?.parts?.[0]?.text;
     
     if (!text) {
-      console.error('[quiz] Hugging Face returned empty text');
-      throw new Error('Empty AI response from Hugging Face');
+      console.error('[quiz] Gemini returned empty text');
+      throw new Error('Empty AI response from Gemini');
     }
 
     // Clean JSON from text (strip markdown fences if present)
