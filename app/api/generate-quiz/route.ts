@@ -175,7 +175,7 @@ ${transcript ? `Transcript:\n${transcript.slice(0, 3000)}` : `[Important Note: N
       required: ['questions']
     };
 
-    let geminiRes;
+    let geminiRes: Response | undefined = undefined;
     let attempts = 0;
     const maxAttempts = 3;
     while (attempts < maxAttempts) {
@@ -214,6 +214,9 @@ ${transcript ? `Transcript:\n${transcript.slice(0, 3000)}` : `[Important Note: N
       }
     }
 
+    if (!geminiRes) {
+      return NextResponse.json({ error: 'Gemini API failed to return a response' }, { status: 502 });
+    }
     const result = await geminiRes.json();
     const text = result?.candidates?.[0]?.content?.parts?.[0]?.text;
     
