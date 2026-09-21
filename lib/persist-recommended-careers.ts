@@ -53,7 +53,7 @@ export async function persistRecommendedCareersForUser(args: {
 
     const existing = await prisma.career.findFirst({
       where: {
-        title: { equals: title, mode: 'insensitive' },
+        title: { equals: title },
       },
     })
 

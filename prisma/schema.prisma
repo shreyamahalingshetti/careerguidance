@@ -1,5 +1,5 @@
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -219,3 +219,54 @@ model SkillGapRecord {
 
   @@map("skill_gap_records")
 }
+
+/////////////////////////////////////////////////
+// O*NET CAREER RECOMMENDATION REDESIGN (12TH)
+/////////////////////////////////////////////////
+
+model CareerFamily {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        String
+  stream      String   // SCIENCE | COMMERCE | ARTS_HUMANITIES
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  occupations OnetOccupation[]
+
+  @@map("career_families")
+}
+
+model OnetOccupation {
+  id                 String   @id @default(cuid())
+  socCode            String   @unique
+  title              String
+  description        String
+  
+  // Official O*NET 1.00 - 7.00 RIASEC continuous ratings
+  riasecR            Float
+  riasecI            Float
+  riasecA            Float
+  riasecS            Float
+  riasecE            Float
+  riasecC            Float
+
+  // Application-defined metadata
+  familyId           String
+  family             CareerFamily @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  
+  // Indian educational prerequisites (Direct Subject Requirements)
+  requiresMath       Boolean  @default(false)
+  requiresBiology    Boolean  @default(false)
+  requiresCs         Boolean  @default(false)
+  isPathwayDependent Boolean  @default(false)
+  
+  // Modern evolving role notes (JSON array as string)
+  relatedModernRoles String?
+
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@map("onet_occupations")
+}

@@ -76,49 +76,99 @@ export const APTITUDE_OPTIONS: { [key: string]: string[] } = {
     'Q30': ['Octagon', 'Heptagon', 'Hexagon', 'Decagon'], 'Q31': ['Top-Left', 'Top-Right', 'Bottom-Left', 'The Center'], 'Q32': ['One circle', 'Two intersecting horizontal lines', 'Three circles', 'One square'],
 };
 
-// --- B. RIASEC + OCEAN QUESTIONS (33 Questions) ---
+export const ONET_ATTRIBUTION_NOTICE =
+  'This application includes information from the O*NET Interest Profiler Short Form by the U.S. Department of Labor, Employment and Training Administration (USDOL/ETA). Used under the O*NET Developer License.'
+
+// --- B. RIASEC + OCEAN QUESTIONS (75 Questions: 60 RIASEC + 15 OCEAN) ---
 export const PROFILE_QUESTIONS: IProfileQuestion[] = [
-    // RIASEC (18 Qs)
-    { id: 'R1', type: 'Realistic', factor: 'RIASEC', text: 'Working with tools to build or repair machinery.', isReversed: false, scale: 'Interest' },
-    { id: 'R2', type: 'Realistic', factor: 'RIASEC', text: 'Doing physical work outdoors, perhaps with animals or plants.', isReversed: false, scale: 'Interest' },
-    { id: 'R3', type: 'Realistic', factor: 'RIASEC', text: 'Operating heavy equipment or machinery.', isReversed: false, scale: 'Interest' },
+    // Realistic (10 Qs - Verbatim O*NET Interest Profiler Short Form)
+    { id: 'R1', type: 'Realistic', factor: 'RIASEC', text: 'Build kitchen cabinets', isReversed: false, scale: 'Interest' },
+    { id: 'R2', type: 'Realistic', factor: 'RIASEC', text: 'Lay brick or tile', isReversed: false, scale: 'Interest' },
+    { id: 'R3', type: 'Realistic', factor: 'RIASEC', text: 'Repair household appliances', isReversed: false, scale: 'Interest' },
+    { id: 'R4', type: 'Realistic', factor: 'RIASEC', text: 'Raise fish in a fish hatchery', isReversed: false, scale: 'Interest' },
+    { id: 'R5', type: 'Realistic', factor: 'RIASEC', text: 'Assemble electronic parts', isReversed: false, scale: 'Interest' },
+    { id: 'R6', type: 'Realistic', factor: 'RIASEC', text: 'Drive a taxi or bus', isReversed: false, scale: 'Interest' },
+    { id: 'R7', type: 'Realistic', factor: 'RIASEC', text: 'Operate a grinding machine in a factory', isReversed: false, scale: 'Interest' },
+    { id: 'R8', type: 'Realistic', factor: 'RIASEC', text: 'Fix a broken faucet', isReversed: false, scale: 'Interest' },
+    { id: 'R9', type: 'Realistic', factor: 'RIASEC', text: 'Install satellite dishes', isReversed: false, scale: 'Interest' },
+    { id: 'R10', type: 'Realistic', factor: 'RIASEC', text: 'Refinish wood furniture', isReversed: false, scale: 'Interest' },
     
-    { id: 'I1', type: 'Investigative', factor: 'RIASEC', text: 'Reading complex articles about science or history.', isReversed: false, scale: 'Interest' },
-    { id: 'I2', type: 'Investigative', factor: 'RIASEC', text: 'Spending time solving logical puzzles or mathematical problems.', isReversed: false, scale: 'Interest' },
-    { id: 'I3', type: 'Investigative', factor: 'RIASEC', text: 'Conducting experiments to see how things work.', isReversed: false, scale: 'Interest' },
+    // Investigative (10 Qs - Verbatim O*NET Interest Profiler Short Form)
+    { id: 'I1', type: 'Investigative', factor: 'RIASEC', text: 'Study the structure of the human body', isReversed: false, scale: 'Interest' },
+    { id: 'I2', type: 'Investigative', factor: 'RIASEC', text: 'Conduct biological research', isReversed: false, scale: 'Interest' },
+    { id: 'I3', type: 'Investigative', factor: 'RIASEC', text: 'Study animal behavior', isReversed: false, scale: 'Interest' },
+    { id: 'I4', type: 'Investigative', factor: 'RIASEC', text: 'Develop a new medical treatment or procedure', isReversed: false, scale: 'Interest' },
+    { id: 'I5', type: 'Investigative', factor: 'RIASEC', text: 'Read books or articles about science', isReversed: false, scale: 'Interest' },
+    { id: 'I6', type: 'Investigative', factor: 'RIASEC', text: 'Conduct chemical experiments', isReversed: false, scale: 'Interest' },
+    { id: 'I7', type: 'Investigative', factor: 'RIASEC', text: 'Analyze data to solve a problem', isReversed: false, scale: 'Interest' },
+    { id: 'I8', type: 'Investigative', factor: 'RIASEC', text: 'Examine microscopic organisms', isReversed: false, scale: 'Interest' },
+    { id: 'I9', type: 'Investigative', factor: 'RIASEC', text: 'Study weather patterns', isReversed: false, scale: 'Interest' },
+    { id: 'I10', type: 'Investigative', factor: 'RIASEC', text: 'Research the history of ancient civilizations', isReversed: false, scale: 'Interest' },
     
-    { id: 'A1', type: 'Artistic', factor: 'RIASEC', text: 'Writing stories, poems, or scripts for a play.', isReversed: false, scale: 'Interest' },
-    { id: 'A2', type: 'Artistic', factor: 'RIASEC', text: 'Designing visual things like websites, graphics, or clothing.', isReversed: false, scale: 'Interest' },
-    { id: 'A3', type: 'Artistic', factor: 'RIASEC', text: 'Enjoying activities that have no specific rules or structure.', isReversed: false, scale: 'Interest' },
+    // Artistic (10 Qs - Verbatim O*NET Interest Profiler Short Form)
+    { id: 'A1', type: 'Artistic', factor: 'RIASEC', text: 'Conduct a musical choir', isReversed: false, scale: 'Interest' },
+    { id: 'A2', type: 'Artistic', factor: 'RIASEC', text: 'Direct a play', isReversed: false, scale: 'Interest' },
+    { id: 'A3', type: 'Artistic', factor: 'RIASEC', text: 'Design artwork for magazines or websites', isReversed: false, scale: 'Interest' },
+    { id: 'A4', type: 'Artistic', factor: 'RIASEC', text: 'Write a song', isReversed: false, scale: 'Interest' },
+    { id: 'A5', type: 'Artistic', factor: 'RIASEC', text: 'Write books, stories, or plays', isReversed: false, scale: 'Interest' },
+    { id: 'A6', type: 'Artistic', factor: 'RIASEC', text: 'Paint portraits or landscapes', isReversed: false, scale: 'Interest' },
+    { id: 'A7', type: 'Artistic', factor: 'RIASEC', text: 'Create pottery or sculpture', isReversed: false, scale: 'Interest' },
+    { id: 'A8', type: 'Artistic', factor: 'RIASEC', text: 'Play a musical instrument in public', isReversed: false, scale: 'Interest' },
+    { id: 'A9', type: 'Artistic', factor: 'RIASEC', text: 'Design clothing or fashion accessories', isReversed: false, scale: 'Interest' },
+    { id: 'A10', type: 'Artistic', factor: 'RIASEC', text: 'Create visual animations', isReversed: false, scale: 'Interest' },
     
-    { id: 'S1', type: 'Social', factor: 'RIASEC', text: 'Volunteering to help others with their personal problems or advice.', isReversed: false, scale: 'Interest' },
-    { id: 'S2', type: 'Social', factor: 'RIASEC', text: 'Teaching or explaining difficult subjects to classmates.', isReversed: false, scale: 'Interest' },
-    { id: 'S3', type: 'Social', factor: 'RIASEC', text: 'Working closely with a large team rather than working alone.', isReversed: false, scale: 'Interest' },
+    // Social (10 Qs - Verbatim O*NET Interest Profiler Short Form)
+    { id: 'S1', type: 'Social', factor: 'RIASEC', text: 'Give career guidance to people', isReversed: false, scale: 'Interest' },
+    { id: 'S2', type: 'Social', factor: 'RIASEC', text: 'Do volunteer work at a non-profit organization', isReversed: false, scale: 'Interest' },
+    { id: 'S3', type: 'Social', factor: 'RIASEC', text: 'Help people who have problems with drugs or alcohol', isReversed: false, scale: 'Interest' },
+    { id: 'S4', type: 'Social', factor: 'RIASEC', text: 'Teach an individual an exercise routine', isReversed: false, scale: 'Interest' },
+    { id: 'S5', type: 'Social', factor: 'RIASEC', text: 'Help people with family-related problems', isReversed: false, scale: 'Interest' },
+    { id: 'S6', type: 'Social', factor: 'RIASEC', text: 'Teach children how to read', isReversed: false, scale: 'Interest' },
+    { id: 'S7', type: 'Social', factor: 'RIASEC', text: 'Care for sick or injured people', isReversed: false, scale: 'Interest' },
+    { id: 'S8', type: 'Social', factor: 'RIASEC', text: 'Work as a counselor in a school or community center', isReversed: false, scale: 'Interest' },
+    { id: 'S9', type: 'Social', factor: 'RIASEC', text: 'Help elderly people with daily tasks', isReversed: false, scale: 'Interest' },
+    { id: 'S10', type: 'Social', factor: 'RIASEC', text: 'Organize recreational activities for a group', isReversed: false, scale: 'Interest' },
     
-    { id: 'E1', type: 'Enterprising', factor: 'RIASEC', text: 'Leading a project or taking charge of a group meeting.', isReversed: false, scale: 'Interest' },
-    { id: 'E2', type: 'Enterprising', factor: 'RIASEC', text: 'Trying to persuade people to agree with your point of view.', isReversed: false, scale: 'Interest' },
-    { id: 'E3', type: 'Enterprising', factor: 'RIASEC', text: 'Setting ambitious goals and competing to win.', isReversed: false, scale: 'Interest' },
+    // Enterprising (10 Qs - Verbatim O*NET Interest Profiler Short Form)
+    { id: 'E1', type: 'Enterprising', factor: 'RIASEC', text: 'Sell merchandise at a department store', isReversed: false, scale: 'Interest' },
+    { id: 'E2', type: 'Enterprising', factor: 'RIASEC', text: 'Manage the operations of a hotel', isReversed: false, scale: 'Interest' },
+    { id: 'E3', type: 'Enterprising', factor: 'RIASEC', text: 'Manage a department within a large company', isReversed: false, scale: 'Interest' },
+    { id: 'E4', type: 'Enterprising', factor: 'RIASEC', text: 'Negotiate business contracts', isReversed: false, scale: 'Interest' },
+    { id: 'E5', type: 'Enterprising', factor: 'RIASEC', text: 'Pitch a product or business idea to investors', isReversed: false, scale: 'Interest' },
+    { id: 'E6', type: 'Enterprising', factor: 'RIASEC', text: 'Lead a marketing campaign', isReversed: false, scale: 'Interest' },
+    { id: 'E7', type: 'Enterprising', factor: 'RIASEC', text: 'Operate a small business', isReversed: false, scale: 'Interest' },
+    { id: 'E8', type: 'Enterprising', factor: 'RIASEC', text: 'Direct the work of a sales team', isReversed: false, scale: 'Interest' },
+    { id: 'E9', type: 'Enterprising', factor: 'RIASEC', text: 'Convince people to buy a product or service', isReversed: false, scale: 'Interest' },
+    { id: 'E10', type: 'Enterprising', factor: 'RIASEC', text: 'Manage budget and sales targets for a business', isReversed: false, scale: 'Interest' },
     
-    { id: 'C1', type: 'Conventional', factor: 'RIASEC', text: 'Organizing data, records, or inventory in meticulous detail.', isReversed: false, scale: 'Interest' },
-    { id: 'C2', type: 'Conventional', factor: 'RIASEC', text: 'Following a strict timetable or fixed set of rules and procedures.', isReversed: false, scale: 'Interest' },
-    { id: 'C3', type: 'Conventional', factor: 'RIASEC', text: 'Handling financial records or managing a budget.', isReversed: false, scale: 'Interest' },
+    // Conventional (10 Qs - Verbatim O*NET Interest Profiler Short Form)
+    { id: 'C1', type: 'Conventional', factor: 'RIASEC', text: 'Generate monthly payroll checks for an office', isReversed: false, scale: 'Interest' },
+    { id: 'C2', type: 'Conventional', factor: 'RIASEC', text: 'Inventory supplies using a computer system', isReversed: false, scale: 'Interest' },
+    { id: 'C3', type: 'Conventional', factor: 'RIASEC', text: 'Use a computer program to generate customer bills', isReversed: false, scale: 'Interest' },
+    { id: 'C4', type: 'Conventional', factor: 'RIASEC', text: 'Maintain employee records and files', isReversed: false, scale: 'Interest' },
+    { id: 'C5', type: 'Conventional', factor: 'RIASEC', text: 'Compute and record statistical and numerical data', isReversed: false, scale: 'Interest' },
+    { id: 'C6', type: 'Conventional', factor: 'RIASEC', text: 'Keep financial records for a business', isReversed: false, scale: 'Interest' },
+    { id: 'C7', type: 'Conventional', factor: 'RIASEC', text: 'Audit financial statements for accuracy', isReversed: false, scale: 'Interest' },
+    { id: 'C8', type: 'Conventional', factor: 'RIASEC', text: 'Organize and file office documents', isReversed: false, scale: 'Interest' },
+    { id: 'C9', type: 'Conventional', factor: 'RIASEC', text: 'Enter data into database spreadsheets', isReversed: false, scale: 'Interest' },
+    { id: 'C10', type: 'Conventional', factor: 'RIASEC', text: 'Inspect incoming shipments for quality and completeness', isReversed: false, scale: 'Interest' },
     
-    // OCEAN (15 Qs)
+    // OCEAN (15 Qs - Untouched)
     { id: 'O1', type: 'Openness', factor: 'OCEAN', text: 'I often find myself fascinated by abstract theories or ideas.', isReversed: false, scale: 'Agreement' },
     { id: 'O2', type: 'Openness', factor: 'OCEAN', text: 'I love trying new activities and dislike routine.', isReversed: false, scale: 'Agreement' },
     { id: 'O3', type: 'Openness', factor: 'OCEAN', text: 'I prefer to stick to tried-and-true methods.', isReversed: true, scale: 'Agreement' }, 
     
-    { id: 'C4', type: 'Conscientiousness', factor: 'OCEAN', text: 'I am very organized and like to plan ahead.', isReversed: false, scale: 'Agreement' },
-    { id: 'C5', type: 'Conscientiousness', factor: 'OCEAN', text: 'I always finish what I start, even if it is difficult.', isReversed: false, scale: 'Agreement' },
-    { id: 'C6', type: 'Conscientiousness', factor: 'OCEAN', text: 'I often put off important tasks until the last minute.', isReversed: true, scale: 'Agreement' }, 
+    { id: 'C4_OCEAN', type: 'Conscientiousness', factor: 'OCEAN', text: 'I am very organized and like to plan ahead.', isReversed: false, scale: 'Agreement' },
+    { id: 'C5_OCEAN', type: 'Conscientiousness', factor: 'OCEAN', text: 'I always finish what I start, even if it is difficult.', isReversed: false, scale: 'Agreement' },
+    { id: 'C6_OCEAN', type: 'Conscientiousness', factor: 'OCEAN', text: 'I often put off important tasks until the last minute.', isReversed: true, scale: 'Agreement' }, 
     
-    { id: 'E4', type: 'Extraversion', factor: 'OCEAN', text: 'I am energized by large social gatherings.', isReversed: false, scale: 'Agreement' },
-    { id: 'E5', type: 'Extraversion', factor: 'OCEAN', text: 'I find it easy to speak up and lead conversations.', isReversed: false, scale: 'Agreement' },
-    { id: 'E6', type: 'Extraversion', factor: 'OCEAN', text: 'I prefer to work and spend time quietly and alone.', isReversed: true, scale: 'Agreement' }, 
+    { id: 'E4_OCEAN', type: 'Extraversion', factor: 'OCEAN', text: 'I am energized by large social gatherings.', isReversed: false, scale: 'Agreement' },
+    { id: 'E5_OCEAN', type: 'Extraversion', factor: 'OCEAN', text: 'I find it easy to speak up and lead conversations.', isReversed: false, scale: 'Agreement' },
+    { id: 'E6_OCEAN', type: 'Extraversion', factor: 'OCEAN', text: 'I prefer to work and spend time quietly and alone.', isReversed: true, scale: 'Agreement' }, 
     
-    { id: 'A4', type: 'Agreeableness', factor: 'OCEAN', text: 'I sympathize with others and try to avoid conflicts.', isReversed: false, scale: 'Agreement' },
-    { id: 'A5', type: 'Agreeableness', factor: 'OCEAN', text: 'I assume the best in people and trust them easily.', isReversed: false, scale: 'Agreement' },
-    { id: 'A6', type: 'Agreeableness', factor: 'OCEAN', text: "I don't hesitate to tell people when they are wrong.", isReversed: true, scale: 'Agreement' }, 
+    { id: 'A4_OCEAN', type: 'Agreeableness', factor: 'OCEAN', text: 'I sympathize with others and try to avoid conflicts.', isReversed: false, scale: 'Agreement' },
+    { id: 'A5_OCEAN', type: 'Agreeableness', factor: 'OCEAN', text: 'I assume the best in people and trust them easily.', isReversed: false, scale: 'Agreement' },
+    { id: 'A6_OCEAN', type: 'Agreeableness', factor: 'OCEAN', text: "I don't hesitate to tell people when they are wrong.", isReversed: true, scale: 'Agreement' }, 
     
     { id: 'N1', type: 'Neuroticism', factor: 'OCEAN', text: 'I often worry about things that might go wrong.', isReversed: false, scale: 'Agreement' },
     { id: 'N2', type: 'Neuroticism', factor: 'OCEAN', text: "I get upset easily when things don't go my way.", isReversed: false, scale: 'Agreement' },
@@ -139,4 +189,4 @@ export const SCALES: { [key: string]: { labels: string[], title: string } } = {
 
 export const TOTAL_QUESTIONS_APTITUDE = APTITUDE_QUESTIONS.length;
 export const TOTAL_QUESTIONS_PROFILE = PROFILE_QUESTIONS.length;
-export const TOTAL_QUESTIONS = TOTAL_QUESTIONS_APTITUDE + TOTAL_QUESTIONS_PROFILE;
+export const TOTAL_QUESTIONS = TOTAL_QUESTIONS_APTITUDE + TOTAL_QUESTIONS_PROFILE;

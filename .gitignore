@@ -38,3 +38,10 @@ next-env.d.ts
 # prisma
 /prisma/migrations
 
+# local/generated files
+/prisma/dev.db
+/onet_31_0/
+/onet_31_0.zip
+/db_31_0_csv.zip
+/PROJECT_SOURCE_CODE_DUMP.txt
+/scripts/onet_parsed.json

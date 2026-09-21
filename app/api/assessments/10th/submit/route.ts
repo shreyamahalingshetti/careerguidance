@@ -15,6 +15,12 @@ import {
   type IProfileQuestion,
 } from '@/lib/constants'
 
+import {
+  computeStudentRiasecVector,
+  getFamilyCentroids,
+  calculate10thStreamRecommendation,
+} from '@/lib/recommendation-10th'
+
 const submitSchema = z.object({
   assessmentId: z.string().min(1).optional(),
   standard: z.string().min(1).default('10th-standard'),
@@ -84,29 +90,6 @@ function computeProfileScores(profileAnswers: Record<string, number | null>) {
   return { breakdown, rows }
 }
 
-function computeFinal(aptitudeBreakdown: Record<string, number>, profileBreakdown: Record<string, number>) {
-  const scienceFit = (aptitudeBreakdown['Numerical'] || 0) * 0.4 + (profileBreakdown['Investigative'] || 0) * 0.3
-  const commerceFit = (aptitudeBreakdown['Numerical'] || 0) * 0.3 + (profileBreakdown['Conventional'] || 0) * 0.4
-  const artsFit = (aptitudeBreakdown['Verbal'] || 0) * 0.45 + (profileBreakdown['Artistic'] || 0) * 0.4
-
-  const scores = [
-    { name: 'science', label: 'Science', score: scienceFit, flex: 90 },
-    { name: 'commerce', label: 'Commerce', score: commerceFit, flex: 70 },
-    { name: 'arts', label: 'Arts/Humanities', score: artsFit, flex: 60 },
-  ].sort((a, b) => b.score - a.score)
-
-  const top = scores[0]
-
-  return {
-    scienceFit,
-    commerceFit,
-    artsFit,
-    recommendedStream: top.label,
-    confidence: Math.min(100, Math.round(top.score)),
-    flexibility: top.flex,
-  }
-}
-
 export async function POST(request: NextRequest) {
   try {
     const user = await getAuthenticatedUser()
@@ -131,7 +114,19 @@ export async function POST(request: NextRequest) {
 
     const { breakdown: aptitudeBreakdown, rows: aptitudeRows } = computeAptitudeScores(aptitudeAnswers)
     const { breakdown: profileBreakdown, rows: profileRows } = computeProfileScores(profileAnswers)
-    const final = computeFinal(aptitudeBreakdown, profileBreakdown)
+
+    const studentVector = computeStudentRiasecVector(profileAnswers)
+    const familyCentroids = await getFamilyCentroids(prisma)
+    const rec = calculate10thStreamRecommendation(studentVector, familyCentroids)
+
+    const final = {
+      scienceFit: rec.scienceFit,
+      commerceFit: rec.commerceFit,
+      artsFit: rec.artsFit,
+      recommendedStream: rec.recommendedStream,
+      confidence: Math.round(rec.streamRankings[0].fitPercentage),
+      flexibility: Math.round(rec.streamRankings[1].fitPercentage),
+    }
 
     const result = await prisma.$transaction(async (tx) => {
       const now = new Date()
@@ -250,6 +245,7 @@ export async function POST(request: NextRequest) {
       return {
         assessmentId: assessment.id,
         finalScore,
+        recommendation: rec,
         aptitudeBreakdown,
         profileBreakdown,
       }

@@ -9,264 +9,15 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ArrowLeft, CheckCircle2 } from 'lucide-react'
 import { useToast } from '@/components/ui/use-toast'
 
-// 33 Questions based on RIASEC + OCEAN for CSE Domain Selection
-const INITIAL_QUESTIONS = [
-  // RIASEC Realistic (1-6)
-  {
-    id: 1,
-    category: 'RIASEC - REALISTIC',
-    question: 'I prefer working with concrete problems that have tangible solutions',
-    riasec: 'R',
-    ocean: 'openness'
-  },
-  {
-    id: 2,
-    category: 'RIASEC - REALISTIC',
-    question: 'I enjoy hands-on work and building things from scratch',
-    riasec: 'R',
-    ocean: 'conscientiousness'
-  },
-  {
-    id: 3,
-    category: 'RIASEC - REALISTIC',
-    question: 'I like fixing broken systems and troubleshooting issues',
-    riasec: 'R',
-    ocean: 'conscientiousness'
-  },
-  {
-    id: 4,
-    category: 'RIASEC - REALISTIC',
-    question: 'I prefer practical applications over theoretical concepts',
-    riasec: 'R',
-    ocean: 'openness'
-  },
-  {
-    id: 5,
-    category: 'RIASEC - REALISTIC',
-    question: 'I enjoy working with infrastructure and system components',
-    riasec: 'R',
-    ocean: 'conscientiousness'
-  },
-  {
-    id: 6,
-    category: 'RIASEC - REALISTIC',
-    question: 'I like setting up and maintaining technical environments',
-    riasec: 'R',
-    ocean: 'conscientiousness'
-  },
-  // RIASEC Investigative (7-12)
-  {
-    id: 7,
-    category: 'RIASEC - INVESTIGATIVE',
-    question: 'I enjoy researching and understanding how things work at a deep level',
-    riasec: 'I',
-    ocean: 'openness'
-  },
-  {
-    id: 8,
-    category: 'RIASEC - INVESTIGATIVE',
-    question: 'I like analyzing data patterns and drawing insights from information',
-    riasec: 'I',
-    ocean: 'openness'
-  },
-  {
-    id: 9,
-    category: 'RIASEC - INVESTIGATIVE',
-    question: 'I am interested in mathematics, statistics, and algorithms',
-    riasec: 'I',
-    ocean: 'openness'
-  },
-  {
-    id: 10,
-    category: 'RIASEC - INVESTIGATIVE',
-    question: 'I enjoy solving complex puzzles and brain teasers',
-    riasec: 'I',
-    ocean: 'openness'
-  },
-  {
-    id: 11,
-    category: 'RIASEC - INVESTIGATIVE',
-    question: 'I am curious about emerging technologies and latest innovations',
-    riasec: 'I',
-    ocean: 'openness'
-  },
-  {
-    id: 12,
-    category: 'RIASEC - INVESTIGATIVE',
-    question: 'I like identifying root causes and understanding systems deeply',
-    riasec: 'I',
-    ocean: 'openness'
-  },
-  // RIASEC Artistic (13-18)
-  {
-    id: 13,
-    category: 'RIASEC - ARTISTIC',
-    question: 'I enjoy creating user-friendly interfaces and visual designs',
-    riasec: 'A',
-    ocean: 'openness'
-  },
-  {
-    id: 14,
-    category: 'RIASEC - ARTISTIC',
-    question: 'I like expressing ideas through creative coding and architecture',
-    riasec: 'A',
-    ocean: 'openness'
-  },
-  {
-    id: 15,
-    category: 'RIASEC - ARTISTIC',
-    question: 'I appreciate aesthetics and good design in applications',
-    riasec: 'A',
-    ocean: 'openness'
-  },
-  {
-    id: 16,
-    category: 'RIASEC - ARTISTIC',
-    question: 'I enjoy exploring new and unconventional solutions',
-    riasec: 'A',
-    ocean: 'openness'
-  },
-  {
-    id: 17,
-    category: 'RIASEC - ARTISTIC',
-    question: 'I like experimenting with new tools and technologies',
-    riasec: 'A',
-    ocean: 'openness'
-  },
-  {
-    id: 18,
-    category: 'RIASEC - ARTISTIC',
-    question: 'I enjoy learning and adapting to new paradigms in tech',
-    riasec: 'A',
-    ocean: 'openness'
-  },
-  // RIASEC Social (19-24)
-  {
-    id: 19,
-    category: 'RIASEC - SOCIAL',
-    question: 'I enjoy helping others solve their technical problems',
-    riasec: 'S',
-    ocean: 'agreeableness'
-  },
-  {
-    id: 20,
-    category: 'RIASEC - SOCIAL',
-    question: 'I like collaborating with teams and sharing knowledge',
-    riasec: 'S',
-    ocean: 'agreeableness'
-  },
-  {
-    id: 21,
-    category: 'RIASEC - SOCIAL',
-    question: 'I enjoy mentoring and teaching others technical concepts',
-    riasec: 'S',
-    ocean: 'agreeableness'
-  },
-  {
-    id: 22,
-    category: 'RIASEC - SOCIAL',
-    question: 'I like communicating complex ideas in simple terms',
-    riasec: 'S',
-    ocean: 'agreeableness'
-  },
-  {
-    id: 23,
-    category: 'RIASEC - SOCIAL',
-    question: 'I prefer working in team environments rather than solo',
-    riasec: 'S',
-    ocean: 'agreeableness'
-  },
-  {
-    id: 24,
-    category: 'RIASEC - SOCIAL',
-    question: 'I enjoy building relationships and networking in tech communities',
-    riasec: 'S',
-    ocean: 'agreeableness'
-  },
-  // RIASEC Enterprising (25-28)
-  {
-    id: 25,
-    category: 'RIASEC - ENTERPRISING',
-    question: 'I am driven by achieving goals and delivering results',
-    riasec: 'E',
-    ocean: 'conscientiousness'
-  },
-  {
-    id: 26,
-    category: 'RIASEC - ENTERPRISING',
-    question: 'I like taking leadership roles and making strategic decisions',
-    riasec: 'E',
-    ocean: 'conscientiousness'
-  },
-  {
-    id: 27,
-    category: 'RIASEC - ENTERPRISING',
-    question: 'I enjoy working on projects with business impact',
-    riasec: 'E',
-    ocean: 'conscientiousness'
-  },
-  {
-    id: 28,
-    category: 'RIASEC - ENTERPRISING',
-    question: 'I am motivated by recognition and career advancement',
-    riasec: 'E',
-    ocean: 'extraversion'
-  },
-  // OCEAN Openness (29-30)
-  {
-    id: 29,
-    category: 'OCEAN - OPENNESS',
-    question: 'I am open to learning completely new programming languages and frameworks',
-    riasec: 'I',
-    ocean: 'openness'
-  },
-  {
-    id: 30,
-    category: 'OCEAN - OPENNESS',
-    question: 'I like thinking about abstract concepts and theoretical problems',
-    riasec: 'I',
-    ocean: 'openness'
-  },
-  // OCEAN Conscientiousness (31-32)
-  {
-    id: 31,
-    category: 'OCEAN - CONSCIENTIOUSNESS',
-    question: 'I am detail-oriented and ensure code quality and standards',
-    riasec: 'C',
-    ocean: 'conscientiousness'
-  },
-  {
-    id: 32,
-    category: 'OCEAN - CONSCIENTIOUSNESS',
-    question: 'I plan my work methodically and follow best practices',
-    riasec: 'R',
-    ocean: 'conscientiousness'
-  },
-  // OCEAN Extraversion (33)
-  {
-    id: 33,
-    category: 'OCEAN - EXTRAVERSION',
-    question: 'I prefer collaborative projects over independent work',
-    riasec: 'S',
-    ocean: 'extraversion'
-  },
-]
-
-// Domain mappings
-const DOMAIN_PROFILES = {
-  datascience: { name: 'Data Science', riasecMatch: ['I', 'R', 'E'] },
-  aiml: { name: 'AI/ML Engineering', riasecMatch: ['I', 'R', 'A'] },
-  cybersecurity: { name: 'Cybersecurity', riasecMatch: ['R', 'I', 'E'] },
-  fullstack: { name: 'Full Stack Development', riasecMatch: ['R', 'A', 'S'] },
-  devops: { name: 'DevOps & Cloud', riasecMatch: ['R', 'E', 'I'] },
-  cloudarchitect: { name: 'Cloud Architecture', riasecMatch: ['R', 'E', 'I'] },
-}
+import { TECHNICAL_QUESTIONS, ITechnicalQuestion } from '@/lib/technical-questions'
+import { calculateTechnicalDomainRecommendations } from '@/lib/recommendation-technical'
+import { sampleRiasecQuestions } from '@/lib/riasec-sampler'
 
 export default function TechnicalGroupTestPage() {
-  const [questions] = useState(() => [...INITIAL_QUESTIONS].sort(() => Math.random() - 0.5))
+  const [questions] = useState<ITechnicalQuestion[]>(() => sampleRiasecQuestions(TECHNICAL_QUESTIONS, 3))
   const router = useRouter()
   const { toast } = useToast()
-  const [answers, setAnswers] = useState<{ [key: number]: number }>({})
+  const [answers, setAnswers] = useState<{ [key: string]: number }>({})
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [saveState, setSaveState] = useState<{ state: 'idle' | 'saving' | 'saved' | 'error'; message?: string; assessmentId?: string }>(
@@ -278,8 +29,8 @@ export default function TechnicalGroupTestPage() {
   const { data: session } = useSession()
   const [selectedStandard, setSelectedStandard] = useState('technical-group')
 
-  const handleAnswer = (questionId: number, value: number) => {
-    setAnswers({ ...answers, [questionId]: value })
+  const handleAnswer = (questionId: string, value: number) => {
+    setAnswers((prev) => ({ ...prev, [questionId]: value }))
   }
 
   const handleNext = () => {
@@ -307,47 +58,21 @@ export default function TechnicalGroupTestPage() {
     setSaveState({ state: 'saving' })
     toast({
       title: "Submitting Test...",
-      description: "Generating personalized recommendations. Please wait.",
+      description: "Generating personalized recommendations based on Pearson vector alignment. Please wait.",
     })
 
     const attempted = Object.keys(answers).length
     const skipped = questions.length - attempted
 
-    // Calculate RIASEC average scores (1-5) based only on attempted answers
-    const riasecSums: { [key: string]: number } = { R: 0, I: 0, A: 0, S: 0, E: 0, C: 0 }
-    const riasecCounts: { [key: string]: number } = { R: 0, I: 0, A: 0, S: 0, E: 0, C: 0 }
-
+    // Build 18 RIASEC profile answers (1-5 Likert scale)
+    const profileAnswers: Record<string, number | null> = {}
     questions.forEach((q) => {
       const raw = answers[q.id]
-      if (raw === undefined) return
-      const scoreValue = raw + 1 // 1-5 scale
-      riasecSums[q.riasec] += scoreValue
-      riasecCounts[q.riasec] += 1
+      profileAnswers[q.id] = raw === undefined ? null : raw + 1
     })
 
-    const riasecScores: { [key: string]: number } = {
-      R: riasecCounts.R > 0 ? riasecSums.R / riasecCounts.R : 0,
-      I: riasecCounts.I > 0 ? riasecSums.I / riasecCounts.I : 0,
-      A: riasecCounts.A > 0 ? riasecSums.A / riasecCounts.A : 0,
-      S: riasecCounts.S > 0 ? riasecSums.S / riasecCounts.S : 0,
-      E: riasecCounts.E > 0 ? riasecSums.E / riasecCounts.E : 0,
-      C: riasecCounts.C > 0 ? riasecSums.C / riasecCounts.C : 0,
-    }
-
-    // Calculate domain fits
-    const domainScores: { [key: string]: number } = {}
-    Object.entries(DOMAIN_PROFILES).forEach(([domain, profile]) => {
-      let score = 0
-      profile.riasecMatch.forEach((type) => {
-        score += riasecScores[type] || 0
-      })
-      domainScores[domain] = score
-    })
-
-    // Rank domains
-    const rankedDomains = Object.entries(domainScores)
-      .sort(([, a], [, b]) => b - a)
-      .map(([domain, score]) => ({ domain, name: DOMAIN_PROFILES[domain as keyof typeof DOMAIN_PROFILES].name, score }))
+    // Calculate domain recommendations via Pearson engine
+    const recResult = calculateTechnicalDomainRecommendations(profileAnswers)
 
     // Call AI API for personalized insights (dynamic fallback if AI not available)
     let insights: any = null
@@ -355,7 +80,11 @@ export default function TechnicalGroupTestPage() {
       const res = await fetch('/api/technical/career-insights', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ riasecScores, domainScores, topDomains: rankedDomains.slice(0,3) }),
+        body: JSON.stringify({
+          riasecScores: recResult.studentRiasecVector,
+          domainScores: recResult.fitPercentages,
+          topDomains: recResult.rankedDomains.slice(0, 3),
+        }),
       })
 
       if (res.ok) {
@@ -363,21 +92,14 @@ export default function TechnicalGroupTestPage() {
         insights = data.insights ?? null
       }
     } catch (e) {
-      // network or API error - continue with non-AI results
       insights = null
     }
 
-    // Determine top domain
-    const topDomain = rankedDomains[0]
+    const topDomainKey = recResult.recommendedDomainKey
+    const topDomainName = recResult.recommendedDomain
 
-    // Save to DB (Supabase via Prisma)
+    // Save to DB via Prisma endpoint
     try {
-      const profileAnswers: Record<string, number | null> = {}
-      for (const q of questions) {
-        const raw = answers[q.id]
-        profileAnswers[String(q.id)] = raw === undefined ? null : raw + 1
-      }
-
       const res = await fetch('/api/assessments/technical/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -386,7 +108,7 @@ export default function TechnicalGroupTestPage() {
           region: 'na',
           timeExpired: remainingSeconds <= 0,
           profileAnswers,
-          recommendedDomain: topDomain?.domain ?? null,
+          recommendedDomain: topDomainKey,
           attempted,
           skipped,
         }),
@@ -394,7 +116,7 @@ export default function TechnicalGroupTestPage() {
 
       if (res.ok) {
         const json = await res.json()
-        setSaveState({ state: 'saved', assessmentId: json?.assessmentId, message: 'Marks saved.' })
+        setSaveState({ state: 'saved', assessmentId: json?.data?.assessmentId || json?.assessmentId, message: 'Marks saved.' })
       } else {
         const txt = await res.text().catch(() => '')
         setSaveState({ state: 'error', message: txt || 'Failed to save marks.' })
@@ -406,25 +128,29 @@ export default function TechnicalGroupTestPage() {
     // Save results + insights to localStorage for the results page
     try {
       const elapsedSeconds = TOTAL_SECONDS - remainingSeconds
-      localStorage.setItem('careerProfile', JSON.stringify({
-        class: 'technical-group',
-        specialization: topDomain?.domain ?? null,
-        testCompleted: true,
-        riasecScores,
-        domainScores,
-        rankedDomains,
-        insights,
-        attempted,
-        skipped,
-        elapsedSeconds
-      }))
+      localStorage.setItem(
+        'careerProfile',
+        JSON.stringify({
+          class: 'technical-group',
+          specialization: topDomainKey,
+          testCompleted: true,
+          riasecScores: recResult.studentRiasecVector,
+          domainScores: recResult.fitPercentages,
+          rankedDomains: recResult.rankedDomains,
+          insights,
+          attempted,
+          skipped,
+          elapsedSeconds,
+          recResult,
+        })
+      )
     } catch (e) {
       console.warn('Failed to write careerProfile', e)
     }
 
     // short delay for UX then navigate to results
     setTimeout(() => {
-      router.push(`/dashboard/technical-group/result?specialization=${topDomain?.domain ?? ''}`)
+      router.push(`/dashboard/technical-group/result?specialization=${topDomainKey}`)
     }, 800)
   }, [answers, router, toast, remainingSeconds, TOTAL_SECONDS, questions])
 
@@ -495,7 +221,7 @@ export default function TechnicalGroupTestPage() {
           </div>
           <div className="text-right">
             <div className="text-sm font-semibold">Answered:</div>
-            <div className="text-3xl font-bold text-purple-600">{Object.keys(answers).length}/33</div>
+            <div className="text-3xl font-bold text-purple-600">{Object.keys(answers).length}/{questions.length}</div>
             <div className="text-xs text-gray-500">{formatTime(remainingSeconds)}</div>
           </div>
         </div>
@@ -526,7 +252,9 @@ export default function TechnicalGroupTestPage() {
           <CardHeader>
             <div className="flex justify-between items-start mb-4">
               <div className="inline-block px-3 py-1 bg-blue-100 dark:bg-blue-900 rounded-full">
-                <span className="text-xs font-bold text-blue-700 dark:text-blue-300">{question.category}</span>
+                <span className="text-xs font-bold text-blue-700 dark:text-blue-300">
+                  RIASEC - {question.type.toUpperCase()}
+                </span>
               </div>
             </div>
             <CardTitle className="text-lg sm:text-xl">
@@ -535,7 +263,7 @@ export default function TechnicalGroupTestPage() {
           </CardHeader>
           <CardContent>
             <p className="text-lg font-medium text-gray-900 dark:text-white mb-8">
-              {question.question}
+              {question.text}
             </p>
 
             {/* 5-Point Likert Scale with Circles */}

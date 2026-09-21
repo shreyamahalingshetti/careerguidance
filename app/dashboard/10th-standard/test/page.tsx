@@ -12,6 +12,8 @@ import {
 } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
 import { CollegeImages } from '@/components/10th/CollegeImages'
+import { generateAptitudeFeedback } from '@/lib/aptitude-feedback-10th'
+import { sampleRiasecQuestions } from '@/lib/riasec-sampler'
 import {
   TOTAL_TIME_SECONDS,
   APTITUDE_QUESTIONS,
@@ -271,31 +273,7 @@ export default function TenthStandardAssessment() {
         profileBreakdown[type] = parseFloat((((average - 1) / 4) * 100).toFixed(1))
       })
 
-      await new Promise((resolve) => setTimeout(resolve, 1500))
-
-      const scienceFit =
-        (aptBreakdown['Numerical'] || 0) * 0.4 + (profileBreakdown['Investigative'] || 0) * 0.3
-      const commerceFit =
-        (aptBreakdown['Numerical'] || 0) * 0.3 + (profileBreakdown['Conventional'] || 0) * 0.4
-      const artsFit =
-        (aptBreakdown['Verbal'] || 0) * 0.45 + (profileBreakdown['Artistic'] || 0) * 0.4
-
-      const scores = [
-        { name: 'science', label: 'Science', score: scienceFit, flex: 90 },
-        { name: 'commerce', label: 'Commerce', score: commerceFit, flex: 70 },
-        { name: 'arts', label: 'Arts/Humanities', score: artsFit, flex: 60 },
-      ].sort((a, b) => b.score - a.score)
-
-      const top = scores[0]
-
-      const mockRecommendation: IFinalRecommendation = {
-        name: top.label,
-        confidence: Math.min(100, Math.round(top.score)),
-        flexibility: top.flex,
-        aptitudeBreakdown: aptBreakdown,
-        profileBreakdown: profileBreakdown,
-        timeExpired,
-      }
+      let finalRec: IFinalRecommendation | null = null
 
       // Persist attempt + marks to DB (Supabase/Postgres via Prisma)
       try {
@@ -318,23 +296,64 @@ export default function TenthStandardAssessment() {
           setSaveError(msg)
         } else {
           const json = await res.json().catch(() => ({}))
-          if (typeof json?.assessmentId === 'string') {
-            setAssessmentId(json.assessmentId)
+          const payload = json?.data || json
+          if (typeof payload?.assessmentId === 'string') {
+            setAssessmentId(payload.assessmentId)
             try {
-              localStorage.setItem('latest10thAssessmentId', json.assessmentId)
+              localStorage.setItem('latest10thAssessmentId', payload.assessmentId)
             } catch (e) {
               // ignore
             }
+          }
+
+          if (payload?.finalScore) {
+            const fs = payload.finalScore
+            const recDetails = payload.recommendation
+            const topStreamName = fs.recommendedStream || 'Science'
+
+            finalRec = {
+              name: topStreamName,
+              confidence: fs.confidence ?? Math.round(recDetails?.scienceFit || 50),
+              flexibility: fs.flexibility ?? Math.round(recDetails?.commerceFit || 50),
+              aptitudeBreakdown: aptBreakdown,
+              profileBreakdown: profileBreakdown,
+              timeExpired,
+            }
+
+            const streamKey = topStreamName.toLowerCase().includes('science')
+              ? 'science'
+              : topStreamName.toLowerCase().includes('commerce')
+              ? 'commerce'
+              : 'arts'
+
+            localStorage.setItem(
+              'careerProfile',
+              JSON.stringify({ class: '10th-standard', stream: streamKey, testCompleted: true })
+            )
           }
         }
       } catch (e: any) {
         setSaveError(e?.message || 'Failed to save marks')
       }
 
-      localStorage.setItem(
-        'careerProfile',
-        JSON.stringify({ class: '10th-standard', stream: top.name, testCompleted: true }),
-      )
+      if (!finalRec) {
+        // Fallback profile if fetch failed
+        finalRec = {
+          name: 'Science',
+          confidence: 50,
+          flexibility: 50,
+          aptitudeBreakdown: aptBreakdown,
+          profileBreakdown: profileBreakdown,
+          timeExpired,
+        }
+      }
+
+      const topStreamName = finalRec.name
+      const streamKey = topStreamName.toLowerCase().includes('science')
+        ? 'science'
+        : topStreamName.toLowerCase().includes('commerce')
+        ? 'commerce'
+        : 'arts'
 
       // Call AI insights endpoint for personalized recommendations
       try {
@@ -343,19 +362,16 @@ export default function TenthStandardAssessment() {
         Object.entries(profileBreakdown).forEach(([type, val]) => {
           normalizedScores[type] = val as number
         })
-        
-        const clusterFits = [
-          { cluster: top.label, score: top.score },
-          ...(scores.slice(1) || []).map(s => ({ cluster: s.label, score: s.score }))
-        ]
 
         const res = await fetch('/api/career-insights', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 
             normalizedScores, 
-            clusterFits, 
-            stream: top.name,
+            clusterFits: [
+              { cluster: topStreamName, score: finalRec.confidence }
+            ], 
+            stream: streamKey,
             aptitudeBreakdown: aptBreakdown
           }),
         })
@@ -375,7 +391,7 @@ export default function TenthStandardAssessment() {
         setAIError('Network error contacting AI route')
       }
 
-      setFinalScores(mockRecommendation)
+      setFinalScores(finalRec)
       setStep(3)
       setIsLoading(false)
     },
@@ -421,7 +437,11 @@ export default function TenthStandardAssessment() {
     // Start a fresh attempt. We intentionally DO NOT set an assessment id here.
     // The DB id will be created on submit and returned by the API.
     setShuffledAptitude([...APTITUDE_QUESTIONS].sort(() => Math.random() - 0.5))
-    setShuffledProfile([...PROFILE_QUESTIONS].sort(() => Math.random() - 0.5))
+    const riasecSampled = sampleRiasecQuestions(
+      PROFILE_QUESTIONS.filter((q) => q.factor === 'RIASEC'),
+      3
+    )
+    setShuffledProfile(riasecSampled)
     setAssessmentId(null)
     setSaveError(null)
     setStep(0.5)
@@ -489,10 +509,9 @@ export default function TenthStandardAssessment() {
         This combined assessment measures all factors for your stream recommendation in{' '}
         <strong>one hour</strong>.
       </p>
-      <div className="grid grid-cols-3 gap-4 mb-10 text-lg font-medium">
+      <div className="grid grid-cols-2 gap-4 mb-10 text-lg font-medium max-w-lg mx-auto">
         <p className="p-4 bg-indigo-50 rounded-lg shadow-md text-black">Aptitude (24 Qs)</p>
-        <p className="p-4 bg-indigo-50 rounded-lg shadow-md text-black">Interests (18 Qs)</p>
-        <p className="p-4 bg-indigo-50 rounded-lg shadow-md text-black">Personality (15 Qs)</p>
+        <p className="p-4 bg-indigo-50 rounded-lg shadow-md text-black">Vocational Interests (18 Qs)</p>
       </div>
       <p className="text-lg font-bold text-red-600 mb-4">
         Total Time Limit: {formatTime(TOTAL_TIME_SECONDS)}
@@ -501,13 +520,16 @@ export default function TenthStandardAssessment() {
         onClick={handleAptitudeStart}
         className="w-full max-w-md bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg shadow-lg transition duration-200"
       >
-        Begin Assessment (57 Questions Total)
+        Begin Assessment (42 Questions Total)
       </button>
     </div>
   )
 
   const renderTestInterface = (isAptitude: boolean) => {
-    const questions = isAptitude ? (shuffledAptitude.length ? shuffledAptitude : APTITUDE_QUESTIONS) : (shuffledProfile.length ? shuffledProfile : PROFILE_QUESTIONS)
+    const defaultRiasecPool = PROFILE_QUESTIONS.filter((q) => q.factor === 'RIASEC')
+    const questions = isAptitude
+      ? (shuffledAptitude.length ? shuffledAptitude : APTITUDE_QUESTIONS)
+      : (shuffledProfile.length ? shuffledProfile : defaultRiasecPool)
     const answers = isAptitude ? aptitudeAnswers : profileAnswers
     const handleSelect = isAptitude ? handleAptitudeAnswerSelect : handleProfileAnswerSelect
 
@@ -520,6 +542,7 @@ export default function TenthStandardAssessment() {
     const qId = q.id
     const isFinalInSet = qIndexInCurrentSet === questions.length - 1
     const questionNumber = currentQuestionIndex + 1
+    const totalQuestionsCount = TOTAL_QUESTIONS_APTITUDE + (shuffledProfile.length || 18)
     const typeLabel = (q as IAptitudeQuestion).section
       ? `Aptitude - ${(q as IAptitudeQuestion).section}`
       : `${(q as IProfileQuestion).factor} - ${(q as IProfileQuestion).type}`
@@ -554,7 +577,7 @@ export default function TenthStandardAssessment() {
         </div>
 
         <h4 className="text-xl font-bold mb-4 text-gray-800">
-          Question {questionNumber}/{TOTAL_QUESTIONS}: {q.text}
+          Question {questionNumber}/{totalQuestionsCount}: {q.text}
         </h4>
 
         {isAptitude ? (
@@ -753,26 +776,60 @@ export default function TenthStandardAssessment() {
           />
         ) : null}
 
-        <div className="grid grid-cols-2 gap-4 text-left">
-          <div className="p-4 bg-gray-100 rounded-lg shadow-md">
-            <p className="font-bold text-indigo-700 mb-2">Aptitude (Readiness)</p>
-            {Object.entries(aptitudeBreakdown).map(([key, value]) => (
-              <p key={key} className="text-sm text-black">
-                {key}: <span className="font-semibold">{value || 0}%</span>
+        {(() => {
+          const aptFeedback = generateAptitudeFeedback(aptitudeBreakdown, name)
+          return (
+            <div className="mt-6 text-left bg-white p-5 rounded-xl border shadow-sm">
+              <div className="flex items-center justify-between flex-wrap gap-2 mb-2">
+                <div className="font-bold text-gray-900 text-lg">Section 2: Skill Development & Practice Guidance</div>
+                <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700">
+                  Assessment Performance
+                </span>
+              </div>
+              <p className="text-xs text-gray-500 mb-4">
+                Based on your current performance across 8 questions per section. Aptitude scores provide skill-building insights and do not alter your stream recommendation.
               </p>
-            ))}
-          </div>
-          <div className="p-4 bg-gray-100 rounded-lg shadow-md">
-            <p className="font-bold text-indigo-700 mb-2">Key Profile Traits</p>
-            {Object.entries(profileBreakdown)
-              .slice(0, 4)
-              .map(([key, value]) => (
-                <p key={key} className="text-sm text-black">
-                  {key}: <span className="font-semibold">{value || 0}%</span>
-                </p>
-              ))}
-          </div>
-        </div>
+
+              <div className="p-3 bg-gray-50 rounded-lg text-xs text-gray-700 mb-4 border">
+                <div className="font-semibold mb-0.5">Overall Performance Summary</div>
+                <div>{aptFeedback.overallSummary}</div>
+                {aptFeedback.streamSynergyNote ? (
+                  <div className="mt-2 text-indigo-700 font-medium bg-indigo-50 p-2 rounded border border-indigo-200">
+                    💡 {aptFeedback.streamSynergyNote}
+                  </div>
+                ) : null}
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                {aptFeedback.sections.map((sec) => (
+                  <div key={sec.section} className="p-3 border rounded-lg bg-gray-50 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="font-bold text-sm text-gray-800">{sec.sectionLabel}</span>
+                        {sec.isRelativeStrength ? (
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                            ⭐ Strength
+                          </span>
+                        ) : sec.isAreaToImprove ? (
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">
+                            🎯 Improve
+                          </span>
+                        ) : null}
+                      </div>
+                      <div className="flex items-baseline gap-2 mb-1">
+                        <span className="text-xl font-black text-gray-900">{sec.percentage}%</span>
+                        <span className={`text-xs font-semibold px-2 py-0.5 rounded border ${sec.bandColorClass}`}>
+                          {sec.band}
+                        </span>
+                      </div>
+                      <p className="text-xs text-gray-600 mb-2 leading-relaxed">{sec.explanation}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )
+        })()}
 
         {/* AI Insights text removed as requested; only show error if any */}
         {aiError && (
